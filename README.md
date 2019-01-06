@@ -1,0 +1,2 @@
+# CopingPartsOfTheImage
+JavaFX_Project
