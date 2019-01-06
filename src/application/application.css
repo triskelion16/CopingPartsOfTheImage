@@ -29,15 +29,25 @@
 	-fx-background-color: #444;
 }
 
-#leftContainer {
-	-fx-padding: 25px;
-}
-
 #imageContainer {
-	-fx-border-color: #fff;
+	-fx-border-color: #ccc;
 	-fx-border-width: 1;
 }
 
+#rightContainer {
+	-fx-border-color: #ccc;
+	-fx-border-width: 1;
+	-fx-alignment: center;
+	-fx-hgap: 10px;
+	-fx-vgap: 10px;
+}
+
+.box {
+	-fx-border-color: #ccc;
+	-fx-border-width: 1;
+	-fx-pref-width: 41px;
+	-fx-pref-height: 41px;
+}
 
 #bottom {
 	-fx-alignment: center;
