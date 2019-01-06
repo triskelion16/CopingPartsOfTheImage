@@ -1,1 +1,53 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.root {
+	-fx-background-color: #111;
+	-fx-border-color: #ccc;
+	-fx-border-width: 5;
+}
+
+#top {
+	-fx-alignment: center;
+	-fx-spacing: 50px;
+	-fx-padding: 25;
+	-fx-border-color: #ccc;
+	-fx-border-width: 1;
+}
+
+.button {
+	-fx-padding: 10px;
+	-fx-font-weight: bold;
+	-fx-text-fill: #eee;
+	-fx-font-size: 14pt;
+	-fx-pref-width: 250px;
+	-fx-background-color: #555;
+	-fx-border-color: #fff;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+.button:hover {
+	-fx-background-color: #444;
+}
+
+#leftContainer {
+	-fx-padding: 25px;
+}
+
+#imageContainer {
+	-fx-border-color: #fff;
+	-fx-border-width: 1;
+}
+
+
+#bottom {
+	-fx-alignment: center;
+	-fx-padding: 25;
+	-fx-border-color: #ccc;
+	-fx-border-width: 1;
+}
+
+#txt {
+	-fx-text-fill: #aaa;
+	-fx-font-weight: bold;
+	-fx-font-size: 14px;
+}
