@@ -23,7 +23,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 public class Main extends Application {
+	Controller controller = new Controller();
+	ArrayList<HBox> boxs = new ArrayList<>();
 	int count = 0;
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -40,24 +43,34 @@ public class Main extends Application {
 			Button clear = new Button("Wyczyść wyniki");
 			top.getChildren().addAll(load, clear);
 			root.setTop(top);
-			
+
+			load.setOnAction(event -> { // *** load button listener ***
+				System.out.println("Nowy img");
+
+			});
 
 			// ======= Right =============================
+			//Group group = new Group();
 			FlowPane rightContainer = new FlowPane();
 			rightContainer.setId("rightContainer");
 			rightContainer.setPrefWidth(295);
 
-			ArrayList<HBox> boxs = new ArrayList<>();
-
 			for (int i = 0; i < 25; i++) {
-				boxs.add(i, new HBox(5));
+				boxs.add(i, new HBox());
 				boxs.get(i).getStyleClass().add("box");
 				rightContainer.getChildren().add(boxs.get(i));
 			}
 
 			root.setRight(rightContainer);
 
-			
+			clear.setOnAction(event -> { // *** clear button listener ***
+				
+				for(HBox box : boxs) {
+					box.getChildren().clear();
+					count = 0;
+				}
+			});
+
 			// ======== Left ==============================
 			Group leftContainer = new Group();
 
@@ -74,54 +87,44 @@ public class Main extends Application {
 
 			leftContainer.getChildren().add(imageCanvas);
 
-			
-			
-			load.setOnAction(event -> { // *** load button listener ***
-				System.out.println("Nowy img");
-				
-			});
-
-			
-			
 			imageCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler -> {
-				
-				
-				Canvas copyCanvas = new Canvas(41, 41);
-				GraphicsContext copyGraphicsContext = copyCanvas.getGraphicsContext2D();
-				
-				boxs.get(count).getChildren().add(copyCanvas);
-				count++;
-				
-				
-				PixelReader reader = image.getPixelReader();
-
 				int width = 41;
 				int height = 41;
-				
-				WritableImage copyPartImg = new WritableImage(width , height );
+				double red = 0;
+				double avgRed = 0;
+
+				Canvas copyCanvas = new Canvas(width, height);
+				GraphicsContext copyGraphicsContext = copyCanvas.getGraphicsContext2D();
+
+				PixelReader reader = image.getPixelReader();
+
+				WritableImage copyPartImg = new WritableImage(width, height);
 				PixelWriter writer = copyPartImg.getPixelWriter();
 				
+				boxs.get(3).getChildren().clear();
+				boxs.get(3).getChildren().add(copyCanvas); 
+				//count++;
+
 				int startX = (int) eventHandler.getX() - 20;
 				int startY = (int) eventHandler.getY() - 20;
-				
-				for(int x = 0; x < width; x++) {
-					for(int y = 0; y < height; y++) {
+
+				for (int x = 0; x < width; x++) {
+					for (int y = 0; y < height; y++) {
 						Color color = reader.getColor(startX + x, startY + y);
-						writer.setColor(x, y,
-								Color.color(
-										color.getRed(), 
-										color.getGreen(), 
-										color.getBlue()
-										));
+						writer.setColor(x, y, Color.color(color.getRed(), color.getGreen(), color.getBlue()));
+
+						red += color.getRed();
 					}
 				}
+
+				avgRed = red / (Math.pow(41, 2));
+				System.out.println(avgRed);
 
 				copyGraphicsContext.drawImage(copyPartImg, 0, 0);
 			});
 
 			root.setLeft(leftContainer);
 
-			
 			// ======= Bottom =============================
 			VBox bottom = new VBox();
 			bottom.setId("bottom");
@@ -131,7 +134,6 @@ public class Main extends Application {
 			bottom.getChildren().add(txt);
 			root.setBottom(bottom);
 
-			
 			// =============================================
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("JavaFX Project 2");
