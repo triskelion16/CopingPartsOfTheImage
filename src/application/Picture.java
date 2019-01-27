@@ -34,7 +34,7 @@ public class Picture implements Comparable<Picture> {
 
 	@Override
 	public int compareTo(Picture picture) {
-		return Double.compare(avgRed, picture.avgRed);
+		return Double.compare(picture.avgRed, avgRed); //sortowanie od największej wartości
 	}
 	
 

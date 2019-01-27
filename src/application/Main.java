@@ -2,9 +2,6 @@ package application;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Group;
@@ -29,7 +26,6 @@ public class Main extends Application {
 	Controller controller = new Controller();
 	
 	ArrayList<HBox> boxs = new ArrayList<>();
-	int count = 0;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -68,7 +64,6 @@ public class Main extends Application {
 				
 				for(HBox box : boxs) {
 					box.getChildren().clear();
-					count = 0;
 				}
 				
 				controller.deletePictures();
@@ -91,58 +86,50 @@ public class Main extends Application {
 
 			leftContainer.getChildren().add(imageCanvas);
 
-			imageCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler -> { // logika do Controller
-				int width = 41;
-				int height = 41;
-				double red = 0;
-				double avgRed = 0;
+			imageCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler -> { 
+				try {
+					int width = 41;
+					int height = 41;
+					double red = 0;
+					double avgRed = 0;
+					int startX = (int) eventHandler.getX() - 20;
+					int startY = (int) eventHandler.getY() - 20;
+					
+					PixelReader reader = image.getPixelReader();
 
-				Canvas copyCanvas = new Canvas(width, height);
-				GraphicsContext copyGraphicsContext = copyCanvas.getGraphicsContext2D();
+					WritableImage copyPartImg = new WritableImage(width, height);
+					PixelWriter writer = copyPartImg.getPixelWriter();
+					
+					for (int x = 0; x < width; x++) {
+						for (int y = 0; y < height; y++) {
+							Color color = reader.getColor(startX + x, startY + y);
+							writer.setColor(x, y, Color.color(color.getRed(), color.getGreen(), color.getBlue()));
 
-				PixelReader reader = image.getPixelReader();
-
-				WritableImage copyPartImg = new WritableImage(width, height);
-				PixelWriter writer = copyPartImg.getPixelWriter();
-				
-				for(HBox box : boxs) { //czyszcenie wszystkich HBox
-					//box.getChildren().clear(); 
-				}
-				
-				//boxs.get(3).getChildren().clear();
-				boxs.get(count).getChildren().add(copyCanvas); 
-				count++;
-
-				int startX = (int) eventHandler.getX() - 20;
-				int startY = (int) eventHandler.getY() - 20;
-
-				for (int x = 0; x < width; x++) {
-					for (int y = 0; y < height; y++) {
-						Color color = reader.getColor(startX + x, startY + y);
-						writer.setColor(x, y, Color.color(color.getRed(), color.getGreen(), color.getBlue()));
-
-						red += color.getRed();
+							red += color.getRed();
+						}
 					}
-				}
 
-				avgRed = red / (Math.pow(41, 2));
-				//System.out.println(avgRed);
-				
-				Picture picture = new Picture(copyPartImg, avgRed);
-				controller.addPicture(picture);
-				
-				ArrayList<Picture> imgs = controller.getPictures();
-				
-				System.out.println(imgs.size());
-				
-				Collections.sort(imgs);
-				
-				
-				for(Picture p : imgs) {
-					System.out.println(p);
+					avgRed = red / (Math.pow(41, 2)); // średnia koloru czerwonego obrazka
+					
+					Picture picture = new Picture(copyPartImg, avgRed); // nowy obiekt
+					controller.addPicture(picture); // dodanie do listy
+					
+					ArrayList<Picture> imgs = controller.getPictures(); // lista obrazkóœ
+					Collections.sort(imgs); //sortowanie
+					
+					for(int i = 0; i < imgs.size(); i++) {
+						Canvas copyCanvas = new Canvas(width, height);
+						GraphicsContext copyGraphicsContext = copyCanvas.getGraphicsContext2D();
+						
+						boxs.get(i).getChildren().clear(); 
+						boxs.get(i).getChildren().add(copyCanvas); 
+						copyGraphicsContext.drawImage(imgs.get(i).getImage(), 0, 0);
+					}
+				} catch (Exception e) {
+					e.getMessage();
+					System.out.println("Error: Poza obszarem");
 				}
-
-				//copyGraphicsContext.drawImage(copyPartImg, 0, 0);
+				
 			});
 
 			root.setLeft(leftContainer);
