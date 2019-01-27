@@ -1,6 +1,9 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -24,6 +27,7 @@ import javafx.scene.paint.Color;
 
 public class Main extends Application {
 	Controller controller = new Controller();
+	
 	ArrayList<HBox> boxs = new ArrayList<>();
 	int count = 0;
 
@@ -33,8 +37,6 @@ public class Main extends Application {
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root, 947, 660);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-
-			Canvas imageCanvas = new Canvas(640, 480);
 
 			// ======= Top ===============================
 			HBox top = new HBox();
@@ -49,13 +51,12 @@ public class Main extends Application {
 
 			});
 
-			// ======= Right =============================
-			//Group group = new Group();
+			// ======= Right ==========================
 			FlowPane rightContainer = new FlowPane();
 			rightContainer.setId("rightContainer");
 			rightContainer.setPrefWidth(295);
 
-			for (int i = 0; i < 25; i++) {
+			for (int i = 0; i < 25; i++) { //właściwie może być tablica
 				boxs.add(i, new HBox());
 				boxs.get(i).getStyleClass().add("box");
 				rightContainer.getChildren().add(boxs.get(i));
@@ -69,9 +70,12 @@ public class Main extends Application {
 					box.getChildren().clear();
 					count = 0;
 				}
+				
+				controller.deletePictures();
 			});
 
 			// ======== Left ==============================
+			Canvas imageCanvas = new Canvas(640, 480);
 			Group leftContainer = new Group();
 
 			HBox imageContainer = new HBox();
@@ -87,7 +91,7 @@ public class Main extends Application {
 
 			leftContainer.getChildren().add(imageCanvas);
 
-			imageCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler -> {
+			imageCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler -> { // logika do Controller
 				int width = 41;
 				int height = 41;
 				double red = 0;
@@ -101,9 +105,13 @@ public class Main extends Application {
 				WritableImage copyPartImg = new WritableImage(width, height);
 				PixelWriter writer = copyPartImg.getPixelWriter();
 				
-				boxs.get(3).getChildren().clear();
-				boxs.get(3).getChildren().add(copyCanvas); 
-				//count++;
+				for(HBox box : boxs) { //czyszcenie wszystkich HBox
+					//box.getChildren().clear(); 
+				}
+				
+				//boxs.get(3).getChildren().clear();
+				boxs.get(count).getChildren().add(copyCanvas); 
+				count++;
 
 				int startX = (int) eventHandler.getX() - 20;
 				int startY = (int) eventHandler.getY() - 20;
@@ -118,9 +126,23 @@ public class Main extends Application {
 				}
 
 				avgRed = red / (Math.pow(41, 2));
-				System.out.println(avgRed);
+				//System.out.println(avgRed);
+				
+				Picture picture = new Picture(copyPartImg, avgRed);
+				controller.addPicture(picture);
+				
+				ArrayList<Picture> imgs = controller.getPictures();
+				
+				System.out.println(imgs.size());
+				
+				Collections.sort(imgs);
+				
+				
+				for(Picture p : imgs) {
+					System.out.println(p);
+				}
 
-				copyGraphicsContext.drawImage(copyPartImg, 0, 0);
+				//copyGraphicsContext.drawImage(copyPartImg, 0, 0);
 			});
 
 			root.setLeft(leftContainer);
