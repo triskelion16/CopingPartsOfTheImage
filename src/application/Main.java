@@ -3,8 +3,6 @@ package application;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.imageio.stream.ImageInputStream;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Group;
@@ -42,7 +40,8 @@ public class Main extends Application {
 			top.setId("top");
 			Button load = new Button("Wczytaj obrazek");
 			Button clear = new Button("Wyczyść wyniki");
-			top.getChildren().addAll(load, clear);
+			top.getChildren().addAll(clear);
+			//top.getChildren().addAll(load, clear);
 			root.setTop(top);
 
 			load.setOnAction(event -> { // *** load button listener ***
@@ -64,7 +63,6 @@ public class Main extends Application {
 			root.setRight(rightContainer);
 
 			clear.setOnAction(event -> { // *** clear button listener ***
-				
 				for(HBox box : boxs) {
 					box.getChildren().clear();
 				}
@@ -75,7 +73,8 @@ public class Main extends Application {
 			// ======== Left ==============================
 			Canvas imageCanvas = new Canvas(640, 480);
 			GraphicsContext gc = imageCanvas.getGraphicsContext2D();
-			gc.setStroke(Color.BLACK);
+			
+			gc.setStroke(Color.BLACK); // ramka
 			gc.setLineWidth(3);
 			gc.strokeLine(20, 20, 620, 20);
 			gc.strokeLine(620, 20, 620, 460);
@@ -121,6 +120,7 @@ public class Main extends Application {
 					}
 
 					avgRed = red / (Math.pow(41, 2)); // średnia koloru czerwonego obrazka
+					System.out.println(avgRed);
 					
 					Picture picture = new Picture(copyPartImg, avgRed); // nowy obiekt
 					controller.addPicture(picture); // dodanie do listy
