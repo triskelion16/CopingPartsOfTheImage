@@ -2,6 +2,9 @@ package application;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import javax.imageio.stream.ImageInputStream;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Group;
@@ -71,6 +74,14 @@ public class Main extends Application {
 
 			// ======== Left ==============================
 			Canvas imageCanvas = new Canvas(640, 480);
+			GraphicsContext gc = imageCanvas.getGraphicsContext2D();
+			gc.setStroke(Color.BLACK);
+			gc.setLineWidth(3);
+			gc.strokeLine(20, 20, 620, 20);
+			gc.strokeLine(620, 20, 620, 460);
+			gc.strokeLine(620, 460, 20, 460);
+			gc.strokeLine(20, 460, 20, 20);
+			
 			Group leftContainer = new Group();
 
 			HBox imageContainer = new HBox();
@@ -86,7 +97,7 @@ public class Main extends Application {
 
 			leftContainer.getChildren().add(imageCanvas);
 
-			imageCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler -> { 
+			imageCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler -> { // click listener
 				try {
 					int width = 41;
 					int height = 41;
@@ -116,6 +127,10 @@ public class Main extends Application {
 					
 					ArrayList<Picture> imgs = controller.getPictures(); // lista obrazkóœ
 					Collections.sort(imgs); //sortowanie
+					
+					if(imgs.size() > 25) {
+						imgs.remove(25);
+					}
 					
 					for(int i = 0; i < imgs.size(); i++) {
 						Canvas copyCanvas = new Canvas(width, height);
